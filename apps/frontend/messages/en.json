@@ -983,6 +983,15 @@
     "title": "Application Tracker",
     "subtitle": "Track where each tailored resume stands in your pipeline.",
     "addApplication": "Add Application",
+    "manage": "Manage",
+    "manageModal": {
+      "title": "Manage visible stages",
+      "description": "Hidden stages are only removed from view — applications are kept. Your choice is saved in this browser."
+    },
+    "allHidden": {
+      "title": "All stages are hidden",
+      "description": "Open Manage to bring stages back."
+    },
     "columns": {
       "saved": "Saved",
       "applied": "Applied",

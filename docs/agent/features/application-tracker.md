@@ -31,6 +31,16 @@ default to `applied` but can be created as `saved`.
 4. **Detail modal:** shows the JD + the applied resume; **Edit** opens
    `/builder?id=<resume_id>`. Tolerates a deleted resume (`resume: null`).
 5. **Bulk actions:** multi-select cards to move or delete in one request.
+6. **Stage visibility (Manage):** the header **Manage** button opens a dialog
+   with an on/off switch per stage. Hidden stages are a **frontend render
+   filter only** — their cards stay in the board state and on the server, and
+   re-appear untouched when the stage is switched back on. The choice is
+   stored per browser in `localStorage`
+   (`resume_matcher_tracker_hidden_statuses`, only hidden keys, unknown keys
+   dropped on read) and re-applied after mount, so it survives refreshes.
+   Hiding every stage shows an "all stages hidden" hint (not the empty board).
+   The bulk-move destination dropdown intentionally still lists all seven
+   stages: it is a target picker, not a display module.
 
 ## Data Model
 
@@ -66,6 +76,8 @@ dedupes on `(job_id, resume_id)` to survive double-submit.
 | `apps/frontend/app/(default)/tracker/page.tsx` | Route |
 | `apps/frontend/components/tracker/*` | Board, column, card, detail modal, bulk bar, manual-add dialog |
 | `apps/frontend/components/tracker/reorder.ts` | Pure drag-end resolution (`planMove`) |
+| `apps/frontend/components/tracker/visibility.ts` | Hidden-stage set: parse/serialize + localStorage I/O |
+| `apps/frontend/components/tracker/manage-status-dialog.tsx` | Per-stage visibility switches (Manage dialog) |
 | `apps/frontend/lib/api/tracker.ts` | Typed API client |
 
 ## Tests
@@ -74,4 +86,7 @@ dedupes on `(job_id, resume_id)` to survive double-submit.
   tolerance, bulk), `tests/integration/test_tracker_autocreate.py` (confirm
   auto-creates an `applied` card), `tests/unit/test_database.py::TestApplications`.
 - Frontend: `tests/tracker-reorder.test.ts` (`planMove` within/cross-column +
-  empty-column drop), `tests/api-tracker.test.ts` (client payloads/URLs).
+  empty-column drop), `tests/api-tracker.test.ts` (client payloads/URLs),
+  `tests/tracker-visibility.test.ts` (hidden-set parse/serialize round-trip),
+  `tests/tracker-manage-visibility.test.tsx` (Manage dialog hides/persists/
+  restores stages without data loss).

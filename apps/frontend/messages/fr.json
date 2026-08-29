@@ -983,6 +983,15 @@
     "title": "Suivi des candidatures",
     "subtitle": "Suivez l'avancement de chaque CV personnalisé dans votre pipeline.",
     "addApplication": "Ajouter une candidature",
+    "manage": "Gérer",
+    "manageModal": {
+      "title": "Gérer les étapes visibles",
+      "description": "Les étapes masquées disparaissent seulement de la vue — les candidatures sont conservées. Votre choix est enregistré dans ce navigateur."
+    },
+    "allHidden": {
+      "title": "Toutes les étapes sont masquées",
+      "description": "Ouvrez Gérer pour les réafficher."
+    },
     "columns": {
       "saved": "Enregistré",
       "applied": "Postulé",

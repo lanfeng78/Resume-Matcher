@@ -15,6 +15,7 @@ import Plus from 'lucide-react/dist/esm/icons/plus';
 import Loader2 from 'lucide-react/dist/esm/icons/loader-2';
 import ChevronLeft from 'lucide-react/dist/esm/icons/chevron-left';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
+import ColumnsSettings from 'lucide-react/dist/esm/icons/columns-settings';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from '@/lib/i18n';
 import {
@@ -31,7 +32,9 @@ import { KanbanColumn } from './kanban-column';
 import { BulkActionBar } from './bulk-action-bar';
 import { CardDetailModal } from './card-detail-modal';
 import { ManualAddApplicationDialog } from './manual-add-application-dialog';
+import { ManageStatusDialog } from './manage-status-dialog';
 import { planMove } from './reorder';
+import { loadHiddenStatuses, saveHiddenStatuses } from './visibility';
 
 function emptyColumns(): ApplicationColumns {
   return APPLICATION_STATUS_ORDER.reduce((acc, status) => {
@@ -53,6 +56,10 @@ export function KanbanBoard() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [openCardId, setOpenCardId] = useState<string | null>(null);
   const [manualAddOpen, setManualAddOpen] = useState(false);
+  // Stage visibility preference. Purely a render filter: hidden columns keep
+  // their data in `columns` (and on the server) — they are just not displayed.
+  const [hiddenStatuses, setHiddenStatuses] = useState<Set<ApplicationStatus>>(new Set());
+  const [manageOpen, setManageOpen] = useState(false);
 
   // Horizontal-scroll affordance: the seven stages overflow the canvas, so we
   // track whether more columns sit off-screen and surface controls + a stage
@@ -78,6 +85,25 @@ export function KanbanBoard() {
     void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Restore the visibility preference after mount: localStorage is client-only,
+  // so the first (SSR-compatible) render always shows every stage.
+  useEffect(() => {
+    setHiddenStatuses(loadHiddenStatuses());
+  }, []);
+
+  const handleToggleVisibility = (status: ApplicationStatus, visible: boolean) => {
+    const next = new Set(hiddenStatuses);
+    if (visible) next.delete(status);
+    else next.add(status);
+    setHiddenStatuses(next);
+    saveHiddenStatuses(next);
+  };
+
+  const visibleStatuses = useMemo(
+    () => APPLICATION_STATUS_ORDER.filter((status) => !hiddenStatuses.has(status)),
+    [hiddenStatuses]
+  );
 
   const allCards: Application[] = useMemo(
     () => APPLICATION_STATUS_ORDER.flatMap((status) => columns[status]),
@@ -113,7 +139,9 @@ export function KanbanBoard() {
       el.removeEventListener('scroll', sync);
       window.removeEventListener('resize', sync);
     };
-  }, [loading, isEmpty]);
+    // visibleStatuses.length: hiding/showing columns changes board width
+    // without a scroll event, so re-sync the affordance then too.
+  }, [loading, isEmpty, visibleStatuses.length]);
 
   const scrollByColumn = (direction: 1 | -1) => {
     scrollRef.current?.scrollBy({ left: direction * 320, behavior: 'smooth' });
@@ -218,6 +246,10 @@ export function KanbanBoard() {
               </button>
             </div>
           )}
+          <Button variant="outline" onClick={() => setManageOpen(true)}>
+            <ColumnsSettings className="h-4 w-4" />
+            {t('tracker.manage')}
+          </Button>
           <Button onClick={() => setManualAddOpen(true)}>
             <Plus className="h-4 w-4" />
             {t('tracker.addApplication')}
@@ -254,6 +286,13 @@ export function KanbanBoard() {
             <p className="font-serif text-lg text-ink">{t('tracker.empty.title')}</p>
             <p className="mt-1 font-mono text-xs text-ink-soft">{t('tracker.empty.description')}</p>
           </div>
+        ) : visibleStatuses.length === 0 ? (
+          <div className="flex flex-1 flex-col items-center justify-center p-10 text-center">
+            <p className="font-serif text-lg text-ink">{t('tracker.allHidden.title')}</p>
+            <p className="mt-1 font-mono text-xs text-ink-soft">
+              {t('tracker.allHidden.description')}
+            </p>
+          </div>
         ) : (
           <DndContext
             sensors={sensors}
@@ -261,12 +300,12 @@ export function KanbanBoard() {
             onDragEnd={handleDragEnd}
           >
             <div ref={scrollRef} className="flex min-h-0 flex-1 overflow-x-auto">
-              {APPLICATION_STATUS_ORDER.map((status, index) => (
+              {visibleStatuses.map((status, index) => (
                 <div
                   key={status}
                   data-column={status}
                   className={`flex ${
-                    index < APPLICATION_STATUS_ORDER.length - 1 ? 'border-r border-black' : ''
+                    index < visibleStatuses.length - 1 ? 'border-r border-black' : ''
                   }`}
                 >
                   <KanbanColumn
@@ -295,7 +334,7 @@ export function KanbanBoard() {
             </span>
           )}
           <div className="flex items-center gap-2">
-            {APPLICATION_STATUS_ORDER.map((status) => (
+            {visibleStatuses.map((status) => (
               <button
                 key={status}
                 type="button"
@@ -323,6 +362,13 @@ export function KanbanBoard() {
         open={manualAddOpen}
         onOpenChange={setManualAddOpen}
         onCreated={load}
+      />
+
+      <ManageStatusDialog
+        open={manageOpen}
+        onOpenChange={setManageOpen}
+        hiddenStatuses={hiddenStatuses}
+        onToggle={handleToggleVisibility}
       />
     </div>
   );
