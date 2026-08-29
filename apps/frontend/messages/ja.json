@@ -984,6 +984,15 @@
     "subtitle": "各カスタマイズ済み履歴書の選考状況を管理します。",
     "addApplication": "応募を追加",
     "manage": "管理",
+    "interviewQuestions": {
+      "button": "面接質問",
+      "title": "面接質問の記録",
+      "description": "記録したすべての質問を会社と職種ごとに表示します。",
+      "empty": {
+        "title": "面接質問はまだありません",
+        "description": "カードの詳細を開いて、聞かれた質問を記録しましょう。"
+      }
+    },
     "manageModal": {
       "title": "表示するステージを管理",
       "description": "非表示のステージはビューから消えるだけで、応募データは保持されます。選択はこのブラウザーに保存されます。"
@@ -1019,6 +1028,9 @@
       "notes": "メモ",
       "notesPlaceholder": "この応募についてのメモを追加…",
       "saveNotes": "メモを保存",
+      "interviewQuestions": "面接質問",
+      "interviewQuestionsPlaceholder": "1 行に 1 件ずつ入力…",
+      "saveQuestions": "面接質問を保存",
       "resumeUnavailable": "応募した履歴書は利用できなくなりました。",
       "loadFailed": "この応募を読み込めませんでした。",
       "editResume": "履歴書を編集"

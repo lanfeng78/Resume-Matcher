@@ -34,6 +34,8 @@ class ApplicationResponse(BaseModel):
     role: str | None = None
     applied_at: str | None = None
     notes: str | None = None
+    # Manually recorded interview questions, one string per question.
+    interview_questions: list[str] = []
     position: int
     created_at: str
     updated_at: str
@@ -81,6 +83,8 @@ class ApplicationUpdate(BaseModel):
     company: str | None = None
     role: str | None = None
     applied_at: str | None = None
+    # Replaces the whole list (empty list clears all questions).
+    interview_questions: list[str] | None = None
 
 
 class BulkStatusUpdate(BaseModel):

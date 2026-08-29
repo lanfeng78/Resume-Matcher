@@ -984,6 +984,15 @@
     "subtitle": "Suivez l'avancement de chaque CV personnalisé dans votre pipeline.",
     "addApplication": "Ajouter une candidature",
     "manage": "Gérer",
+    "interviewQuestions": {
+      "button": "Questions d'entretien",
+      "title": "Questions d'entretien",
+      "description": "Toutes les questions que vous avez notées, regroupées par entreprise et par poste.",
+      "empty": {
+        "title": "Aucune question d'entretien",
+        "description": "Ouvrez une candidature pour noter les questions posées."
+      }
+    },
     "manageModal": {
       "title": "Gérer les étapes visibles",
       "description": "Les étapes masquées disparaissent seulement de la vue — les candidatures sont conservées. Votre choix est enregistré dans ce navigateur."
@@ -1019,6 +1028,9 @@
       "notes": "Notes",
       "notesPlaceholder": "Ajoutez des notes sur cette candidature…",
       "saveNotes": "Enregistrer les notes",
+      "interviewQuestions": "Questions d'entretien",
+      "interviewQuestionsPlaceholder": "Une question par ligne…",
+      "saveQuestions": "Enregistrer les questions",
       "resumeUnavailable": "Le CV soumis n'est plus disponible.",
       "loadFailed": "Impossible de charger cette candidature.",
       "editResume": "Modifier le CV"

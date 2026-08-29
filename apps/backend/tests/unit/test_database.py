@@ -94,6 +94,31 @@ class TestResumeCrud:
         finally:
             engine.dispose()
 
+    def test_interview_questions_migration_is_idempotent(self, tmp_path):
+        engine = make_sync_engine(tmp_path / "old-apps.db")
+        try:
+            with engine.begin() as conn:
+                conn.exec_driver_sql(
+                    """
+                    CREATE TABLE applications (
+                        application_id TEXT PRIMARY KEY,
+                        job_id TEXT,
+                        resume_id TEXT,
+                        status TEXT DEFAULT 'applied'
+                    )
+                    """
+                )
+
+            init_models_sync(engine)
+            init_models_sync(engine)
+
+            with engine.begin() as conn:
+                columns = conn.exec_driver_sql("PRAGMA table_info(applications)").mappings().all()
+            names = [column["name"] for column in columns]
+            assert names.count("interview_questions") == 1
+        finally:
+            engine.dispose()
+
 
 class TestMasterResume:
     async def test_no_master_initially(self, db):
@@ -219,6 +244,17 @@ class TestApplications:
     async def test_saved_status_has_no_applied_at(self, db):
         a = await db.create_application(job_id="j1", resume_id="r1", status="saved")
         assert a["applied_at"] is None
+
+    async def test_interview_questions_round_trip(self, db):
+        a = await db.create_application(job_id="j1", resume_id="r1")
+        assert a["interview_questions"] == []  # pre-seed default
+
+        updated = await db.update_application(
+            a["application_id"], {"interview_questions": ["q1", "q2"]}
+        )
+        assert updated["interview_questions"] == ["q1", "q2"]
+        fetched = await db.get_application(a["application_id"])
+        assert fetched["interview_questions"] == ["q1", "q2"]
 
     async def test_create_dedupes_on_job_and_resume(self, db):
         a = await db.create_application(job_id="j1", resume_id="r1")

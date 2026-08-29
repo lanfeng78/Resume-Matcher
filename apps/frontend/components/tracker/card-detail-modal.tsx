@@ -38,6 +38,10 @@ export function CardDetailModal({
   const [notes, setNotes] = useState('');
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesError, setNotesError] = useState<string | null>(null);
+  // Interview questions, one per line in the textarea.
+  const [questions, setQuestions] = useState('');
+  const [savingQuestions, setSavingQuestions] = useState(false);
+  const [questionsError, setQuestionsError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open || !applicationId) {
@@ -52,6 +56,8 @@ export function CardDetailModal({
         setDetail(data);
         setNotes(data.notes ?? '');
         setNotesError(null);
+        setQuestions((data.interview_questions ?? []).join('\n'));
+        setQuestionsError(null);
       })
       .catch(() => {
         if (!cancelled) setDetail(null);
@@ -82,6 +88,24 @@ export function CardDetailModal({
       setNotesError(t('common.error'));
     } finally {
       setSavingNotes(false);
+    }
+  };
+
+  const handleSaveQuestions = async () => {
+    if (!applicationId) return;
+    setSavingQuestions(true);
+    setQuestionsError(null);
+    const parsed = questions
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+    try {
+      await updateApplication(applicationId, { interview_questions: parsed });
+      onUpdated();
+    } catch {
+      setQuestionsError(t('common.error'));
+    } finally {
+      setSavingQuestions(false);
     }
   };
 
@@ -146,6 +170,37 @@ export function CardDetailModal({
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     t('tracker.modal.saveNotes')
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label htmlFor="card-interview-questions">
+                {t('tracker.modal.interviewQuestions')}
+              </Label>
+              <Textarea
+                id="card-interview-questions"
+                value={questions}
+                onChange={(e) => setQuestions(e.target.value)}
+                onKeyDown={handleNotesKeyDown}
+                placeholder={t('tracker.modal.interviewQuestionsPlaceholder')}
+                rows={3}
+              />
+              <div className="flex items-center justify-end gap-3">
+                {questionsError && (
+                  <span className="font-mono text-xs text-destructive">{questionsError}</span>
+                )}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleSaveQuestions}
+                  disabled={savingQuestions}
+                >
+                  {savingQuestions ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    t('tracker.modal.saveQuestions')
                   )}
                 </Button>
               </div>

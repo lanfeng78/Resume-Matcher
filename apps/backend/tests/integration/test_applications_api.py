@@ -147,6 +147,68 @@ class TestUpdateAndMove:
         assert resp.status_code == 404
 
 
+class TestInterviewQuestions:
+    async def test_new_card_defaults_to_empty_questions(self, isolated_db):
+        await _seed_card(isolated_db)
+        async with _client() as client:
+            resp = await client.get("/api/v1/applications")
+        assert resp.status_code == 200
+        card = resp.json()["columns"]["applied"][0]
+        assert card["interview_questions"] == []
+
+    async def test_patch_stores_questions_and_list_returns_them(self, isolated_db):
+        card = await _seed_card(isolated_db)
+        questions = ["Walk through your past projects", "How do you debug prod incidents?"]
+        async with _client() as client:
+            resp = await client.patch(
+                f"/api/v1/applications/{card['application_id']}",
+                json={"interview_questions": questions},
+            )
+        assert resp.status_code == 200
+        assert resp.json()["interview_questions"] == questions
+        async with _client() as client:
+            board = (await client.get("/api/v1/applications")).json()["columns"]
+        assert board["applied"][0]["interview_questions"] == questions
+
+    async def test_patch_empty_list_clears_questions(self, isolated_db):
+        card = await _seed_card(isolated_db)
+        async with _client() as client:
+            first = await client.patch(
+                f"/api/v1/applications/{card['application_id']}",
+                json={"interview_questions": ["q1", "q2"]},
+            )
+            assert first.status_code == 200
+            resp = await client.patch(
+                f"/api/v1/applications/{card['application_id']}",
+                json={"interview_questions": []},
+            )
+        assert resp.status_code == 200
+        assert resp.json()["interview_questions"] == []
+
+    async def test_patch_questions_keeps_other_fields(self, isolated_db):
+        card = await _seed_card(isolated_db, company="Acme")
+        async with _client() as client:
+            resp = await client.patch(
+                f"/api/v1/applications/{card['application_id']}",
+                json={"interview_questions": ["q1"]},
+            )
+        assert resp.status_code == 200
+        body = resp.json()
+        assert body["company"] == "Acme"
+        assert body["status"] == "applied"
+        assert body["interview_questions"] == ["q1"]
+
+    async def test_detail_includes_questions(self, isolated_db):
+        card = await _seed_card(isolated_db)
+        await isolated_db.update_application(
+            card["application_id"], {"interview_questions": ["q1"]}
+        )
+        async with _client() as client:
+            resp = await client.get(f"/api/v1/applications/{card['application_id']}")
+        assert resp.status_code == 200
+        assert resp.json()["interview_questions"] == ["q1"]
+
+
 class TestBulkAndDelete:
     async def test_bulk_move(self, isolated_db):
         a = await _seed_card(isolated_db, job_id="j1", resume_id="r1")
