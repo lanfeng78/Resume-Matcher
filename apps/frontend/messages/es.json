@@ -1016,6 +1016,8 @@
     "modal": {
       "jobDescription": "Descripción del empleo",
       "noJobDescription": "No hay descripción del empleo.",
+      "interviewTime": "Hora de la entrevista",
+      "saveInterviewTime": "Guardar hora",
       "notes": "Notas",
       "notesPlaceholder": "Añade notas sobre esta candidatura…",
       "saveNotes": "Guardar notas",
