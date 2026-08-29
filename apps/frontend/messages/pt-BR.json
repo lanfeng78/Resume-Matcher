@@ -983,6 +983,15 @@
     "title": "Acompanhamento de candidaturas",
     "subtitle": "Acompanhe em que etapa está cada currículo personalizado.",
     "addApplication": "Adicionar candidatura",
+    "manage": "Gerenciar",
+    "manageModal": {
+      "title": "Gerenciar etapas visíveis",
+      "description": "Etapas ocultas somem apenas da visualização — as candidaturas são mantidas. Sua escolha é salva neste navegador."
+    },
+    "allHidden": {
+      "title": "Todas as etapas estão ocultas",
+      "description": "Abra Gerenciar para exibi-las novamente."
+    },
     "columns": {
       "saved": "Salvo",
       "applied": "Enviado",
