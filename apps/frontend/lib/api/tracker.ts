@@ -23,6 +23,9 @@ export interface Application {
   company: string | null;
   role: string | null;
   applied_at: string | null;
+  // Scheduled interview date+time (datetime-local string); recorded while the
+  // card is in the interview column and kept when it moves on.
+  interview_at: string | null;
   notes: string | null;
   position: number;
   created_at: string;
@@ -57,6 +60,7 @@ export interface ApplicationUpdate {
   company?: string;
   role?: string;
   applied_at?: string;
+  interview_at?: string | null;
 }
 
 export interface ApplicationActionResponse {

@@ -1016,6 +1016,8 @@
     "modal": {
       "jobDescription": "职位描述",
       "noJobDescription": "没有职位描述。",
+      "interviewTime": "面试时间",
+      "saveInterviewTime": "保存时间",
       "notes": "备注",
       "notesPlaceholder": "为此申请添加备注……",
       "saveNotes": "保存备注",

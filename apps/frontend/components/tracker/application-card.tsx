@@ -4,6 +4,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import GripVertical from 'lucide-react/dist/esm/icons/grip-vertical';
+import Clock from 'lucide-react/dist/esm/icons/clock';
 import Layers from 'lucide-react/dist/esm/icons/layers';
 import { Card } from '@/components/ui/card';
 import { useTranslations } from '@/lib/i18n';
@@ -69,6 +70,17 @@ export function ApplicationCard({
             {application.applied_at && (
               <p className="mt-1 font-mono text-[10px] uppercase tracking-wide text-steel-grey">
                 {new Date(application.applied_at).toLocaleDateString()}
+              </p>
+            )}
+            {application.interview_at && (
+              <p className="mt-1 flex items-center gap-1 font-mono text-[10px] uppercase tracking-wide text-ink">
+                <Clock className="h-3 w-3 shrink-0" />
+                {new Date(application.interview_at).toLocaleString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
+                })}
               </p>
             )}
             {sharedResume && (
