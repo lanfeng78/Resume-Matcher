@@ -1025,6 +1025,8 @@
     "modal": {
       "jobDescription": "Fiche de poste",
       "noJobDescription": "Aucune fiche de poste enregistrée.",
+      "interviewTime": "Heure de l'entretien",
+      "saveInterviewTime": "Enregistrer l'heure",
       "notes": "Notes",
       "notesPlaceholder": "Ajoutez des notes sur cette candidature…",
       "saveNotes": "Enregistrer les notes",

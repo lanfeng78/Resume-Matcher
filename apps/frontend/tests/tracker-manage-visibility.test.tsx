@@ -44,6 +44,7 @@ function mkApp(status: ApplicationStatus, id: string, company: string): Applicat
     company,
     role: 'Engineer',
     applied_at: null,
+    interview_at: null,
     notes: null,
     interview_questions: [],
     position: 0,

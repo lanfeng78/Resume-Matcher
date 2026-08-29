@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useTranslations } from '@/lib/i18n';
@@ -38,6 +39,10 @@ export function CardDetailModal({
   const [notes, setNotes] = useState('');
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesError, setNotesError] = useState<string | null>(null);
+  // Scheduled interview date+time (main) — shown only on the interview column.
+  const [interviewAt, setInterviewAt] = useState('');
+  const [savingInterviewTime, setSavingInterviewTime] = useState(false);
+  const [interviewTimeError, setInterviewTimeError] = useState<string | null>(null);
   // Interview questions, one per line in the textarea.
   const [questions, setQuestions] = useState('');
   const [savingQuestions, setSavingQuestions] = useState(false);
@@ -56,6 +61,8 @@ export function CardDetailModal({
         setDetail(data);
         setNotes(data.notes ?? '');
         setNotesError(null);
+        setInterviewAt(data.interview_at ?? '');
+        setInterviewTimeError(null);
         setQuestions((data.interview_questions ?? []).join('\n'));
         setQuestionsError(null);
       })
@@ -109,6 +116,23 @@ export function CardDetailModal({
     }
   };
 
+  const handleSaveInterviewTime = async () => {
+    if (!applicationId) return;
+    setSavingInterviewTime(true);
+    setInterviewTimeError(null);
+    try {
+      // An empty input clears the recorded interview time.
+      await updateApplication(applicationId, { interview_at: interviewAt || null });
+      onUpdated();
+    } catch {
+      // Show a generic message — never echo raw backend error text inline,
+      // which could contain sensitive values.
+      setInterviewTimeError(t('common.error'));
+    } finally {
+      setSavingInterviewTime(false);
+    }
+  };
+
   const resumeAvailable = Boolean(detail?.resume);
 
   return (
@@ -137,6 +161,16 @@ export function CardDetailModal({
                   })}
                 </span>
               )}
+              {detail.interview_at && (
+                <span>
+                  {new Date(detail.interview_at).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                  })}
+                </span>
+              )}
             </div>
 
             <div className="space-y-1">
@@ -145,6 +179,36 @@ export function CardDetailModal({
                 {detail.job_content || t('tracker.modal.noJobDescription')}
               </div>
             </div>
+
+            {detail.status === 'interview' && (
+              <div className="space-y-1">
+                <Label htmlFor="card-interview-at">{t('tracker.modal.interviewTime')}</Label>
+                <div className="flex items-center gap-3">
+                  <Input
+                    id="card-interview-at"
+                    type="datetime-local"
+                    value={interviewAt}
+                    onChange={(e) => setInterviewAt(e.target.value)}
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleSaveInterviewTime}
+                    disabled={savingInterviewTime}
+                    className="shrink-0"
+                  >
+                    {savingInterviewTime ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      t('tracker.modal.saveInterviewTime')
+                    )}
+                  </Button>
+                </div>
+                {interviewTimeError && (
+                  <span className="font-mono text-xs text-destructive">{interviewTimeError}</span>
+                )}
+              </div>
+            )}
 
             <div className="space-y-1">
               <Label htmlFor="card-notes">{t('tracker.modal.notes')}</Label>

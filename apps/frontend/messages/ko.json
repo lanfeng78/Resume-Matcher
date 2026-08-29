@@ -1025,6 +1025,8 @@
     "modal": {
       "jobDescription": "채용 공고",
       "noJobDescription": "등록된 채용 공고가 없습니다.",
+      "interviewTime": "면접 일시",
+      "saveInterviewTime": "일시 저장",
       "notes": "메모",
       "notesPlaceholder": "이 지원에 대한 메모를 추가하세요…",
       "saveNotes": "메모 저장",

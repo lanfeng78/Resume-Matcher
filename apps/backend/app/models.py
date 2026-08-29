@@ -116,6 +116,9 @@ class Application(Base):
     company: Mapped[str | None] = mapped_column(String, nullable=True)
     role: Mapped[str | None] = mapped_column(String, nullable=True)
     applied_at: Mapped[str | None] = mapped_column(String, nullable=True)
+    # Scheduled interview date+time (datetime-local string); only meaningful
+    # while the card is in the interview column but kept if the card moves.
+    interview_at: Mapped[str | None] = mapped_column(String, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Manually recorded interview questions, one string per question.
     interview_questions: Mapped[list] = mapped_column(JSON, default=list)

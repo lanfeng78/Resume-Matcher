@@ -33,6 +33,7 @@ class ApplicationResponse(BaseModel):
     company: str | None = None
     role: str | None = None
     applied_at: str | None = None
+    interview_at: str | None = None
     notes: str | None = None
     # Manually recorded interview questions, one string per question.
     interview_questions: list[str] = []
@@ -83,6 +84,7 @@ class ApplicationUpdate(BaseModel):
     company: str | None = None
     role: str | None = None
     applied_at: str | None = None
+    interview_at: str | None = None
     # Replaces the whole list (empty list clears all questions).
     interview_questions: list[str] | None = None
 

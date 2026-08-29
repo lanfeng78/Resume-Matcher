@@ -288,6 +288,50 @@ class TestApplications:
         assert remaining[0]["position"] == 0  # renumbered after delete
 
 
+    async def test_interview_at_round_trips_as_text(self, db):
+        a = await db.create_application(job_id="j1", resume_id="r1")
+        assert a["interview_at"] is None
+        updated = await db.update_application(
+            a["application_id"], {"interview_at": "2026-09-05T14:30"}
+        )
+        assert updated["interview_at"] == "2026-09-05T14:30"
+        fetched = await db.get_application(a["application_id"])
+        assert fetched["interview_at"] == "2026-09-05T14:30"
+        # Moving the card to another column keeps the interview time.
+        moved = await db.update_application(
+            a["application_id"], {"status": "accepted", "position": 0}
+        )
+        assert moved["interview_at"] == "2026-09-05T14:30"
+
+    def test_interview_at_migration_is_idempotent(self, tmp_path):
+        engine = make_sync_engine(tmp_path / "old.db")
+        try:
+            with engine.begin() as conn:
+                conn.exec_driver_sql(
+                    """
+                    CREATE TABLE applications (
+                        application_id TEXT PRIMARY KEY,
+                        job_id TEXT NOT NULL,
+                        resume_id TEXT NOT NULL,
+                        status TEXT NOT NULL DEFAULT 'applied',
+                        position INTEGER NOT NULL DEFAULT 0
+                    )
+                    """
+                )
+
+            init_models_sync(engine)
+            init_models_sync(engine)
+
+            with engine.begin() as conn:
+                columns = conn.exec_driver_sql(
+                    "PRAGMA table_info(applications)"
+                ).mappings().all()
+            names = [column["name"] for column in columns]
+            assert names.count("interview_at") == 1
+        finally:
+            engine.dispose()
+
+
 class TestApiKeyStore:
     async def test_set_get_delete_ciphertext(self, db):
         db.set_api_key_ciphertext("openai", "ct-openai")

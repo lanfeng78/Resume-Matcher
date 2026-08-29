@@ -1025,6 +1025,8 @@
     "modal": {
       "jobDescription": "Job Description",
       "noJobDescription": "No job description on file.",
+      "interviewTime": "Interview time",
+      "saveInterviewTime": "Save time",
       "notes": "Notes",
       "notesPlaceholder": "Add notes about this application…",
       "saveNotes": "Save notes",

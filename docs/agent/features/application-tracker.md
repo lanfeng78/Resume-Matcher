@@ -31,7 +31,12 @@ default to `applied` but can be created as `saved`.
 4. **Detail modal:** shows the JD + the applied resume; **Edit** opens
    `/builder?id=<resume_id>`. Tolerates a deleted resume (`resume: null`).
 5. **Bulk actions:** multi-select cards to move or delete in one request.
-6. **Stage visibility (Manage):** the header **Manage** button opens a dialog
+6. **Interview time:** while a card is in the **`interview`** stage its detail
+   modal offers a date+time editor (`datetime-local`) that persists
+   `interview_at` via the regular card PATCH. The value is shown on the card
+   and in the modal meta row regardless of the current stage (moving the card
+   out of `interview` keeps it; saving an empty value clears it).
+7. **Stage visibility (Manage):** the header **Manage** button opens a dialog
    with an on/off switch per stage. Hidden stages are a **frontend render
    filter only** — their cards stay in the board state and on the server, and
    re-appear untouched when the stage is switched back on. The choice is
@@ -48,19 +53,21 @@ default to `applied` but can be created as `saved`.
    stage badge, blank companies fall back to "Unknown company"). The dialog
    aggregates the already-loaded board state — no extra endpoint — and
    therefore includes applications in hidden stages (hiding is a render
-   filter only). No interview date/time is tracked.
+   filter only). Question records are separate from the interview-time field
+   (`interview_at`) edited on the interview column.
 
 ## Data Model
 
 `Application` (SQLite, `apps/backend/app/models.py`): `application_id` (PK),
 `job_id`, `resume_id` (the applied/tailored resume), `master_resume_id`
 (optional base — powers the "shared resume" badge), `status` (7-key enum),
-`company`, `role`, `applied_at`, `notes`, `interview_questions` (JSON list of
-strings; stored inline so deleting the card deletes its questions — an
-idempotent `ALTER TABLE` in `app/db_engine.py` backfills older databases),
-`position` (per-column order, server-renumbered on PATCH), `created_at`,
-`updated_at`. `create_application` dedupes on `(job_id, resume_id)` to survive
-double-submit.
+`company`, `role`, `applied_at`, `interview_at`, `notes`, `interview_questions`
+(JSON list of strings; stored inline so deleting the card deletes its
+questions), `position` (per-column order, server-renumbered on PATCH),
+`created_at`, `updated_at`. `create_application` dedupes on
+`(job_id, resume_id)` to survive double-submit. `interview_at` and
+`interview_questions` are added to older databases by idempotent `ALTER TABLE`
+migrations in `app/db_engine.py`.
 
 ## API (`prefix=/applications`, mounted under `/api/v1`)
 
@@ -69,7 +76,7 @@ double-submit.
 | GET | `/applications` | All cards grouped by column (all 7 keys present) |
 | POST | `/applications` | Manual add (creates job + card; best-effort extraction) |
 | GET | `/applications/{id}` | Card + embedded JD + resume (resume null if deleted) |
-| PATCH | `/applications/{id}` | Update status/position/notes/company/role/applied_at/interview_questions |
+| PATCH | `/applications/{id}` | Update status/position/notes/company/role/applied_at/interview_at/interview_questions |
 | PATCH | `/applications/bulk` | Move many cards to one column |
 | DELETE | `/applications/{id}` | Delete one card |
 | POST | `/applications/bulk-delete` | Delete many cards |

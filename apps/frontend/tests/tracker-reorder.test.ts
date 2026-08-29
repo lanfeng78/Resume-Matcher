@@ -17,6 +17,7 @@ function card(id: string, status: ApplicationStatus, position: number): Applicat
     company: null,
     role: null,
     applied_at: null,
+    interview_at: null,
     notes: null,
     interview_questions: [],
     position,

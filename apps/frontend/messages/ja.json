@@ -1025,6 +1025,8 @@
     "modal": {
       "jobDescription": "求人内容",
       "noJobDescription": "求人内容はありません。",
+      "interviewTime": "面接日時",
+      "saveInterviewTime": "日時を保存",
       "notes": "メモ",
       "notesPlaceholder": "この応募についてのメモを追加…",
       "saveNotes": "メモを保存",

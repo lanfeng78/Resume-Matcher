@@ -66,6 +66,19 @@ describe('tracker API client', () => {
     expect(JSON.parse(String(options.body))).toEqual({ status: 'rejected', position: 0 });
   });
 
+  it('updateApplication sends interview_at as set or null to clear', async () => {
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(new Response(JSON.stringify({ application_id: 'x' }), { status: 200 }))
+    );
+    await updateApplication('x', { interview_at: '2026-09-05T14:30' });
+    expect(JSON.parse(String(lastCall().options.body))).toEqual({
+      interview_at: '2026-09-05T14:30',
+    });
+
+    await updateApplication('x', { interview_at: null });
+    expect(JSON.parse(String(lastCall().options.body))).toEqual({ interview_at: null });
+  });
+
   it('createApplication POSTs the manual-add payload', async () => {
     fetchMock.mockResolvedValue(
       new Response(JSON.stringify({ application_id: 'x' }), { status: 200 })
