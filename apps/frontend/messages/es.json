@@ -984,6 +984,15 @@
     "subtitle": "Controla en qué punto está cada currículum adaptado de tu proceso.",
     "addApplication": "Añadir candidatura",
     "manage": "Gestionar",
+    "interviewQuestions": {
+      "button": "Preguntas de entrevista",
+      "title": "Preguntas de entrevista",
+      "description": "Todas las preguntas que has registrado, agrupadas por empresa y puesto.",
+      "empty": {
+        "title": "Aún no hay preguntas de entrevista",
+        "description": "Abre una candidatura para registrar las preguntas que te hicieron."
+      }
+    },
     "manageModal": {
       "title": "Gestionar etapas visibles",
       "description": "Las etapas ocultas solo desaparecen de la vista; las candidaturas se conservan. Tu elección se guarda en este navegador."
@@ -1021,6 +1030,9 @@
       "notes": "Notas",
       "notesPlaceholder": "Añade notas sobre esta candidatura…",
       "saveNotes": "Guardar notas",
+      "interviewQuestions": "Preguntas de entrevista",
+      "interviewQuestionsPlaceholder": "Una pregunta por línea…",
+      "saveQuestions": "Guardar preguntas",
       "resumeUnavailable": "El currículum enviado ya no está disponible.",
       "loadFailed": "No se pudo cargar esta candidatura.",
       "editResume": "Editar currículum"

@@ -27,6 +27,8 @@ export interface Application {
   // card is in the interview column and kept when it moves on.
   interview_at: string | null;
   notes: string | null;
+  // Manually recorded interview questions, one string per question.
+  interview_questions: string[];
   position: number;
   created_at: string;
   updated_at: string;
@@ -61,6 +63,8 @@ export interface ApplicationUpdate {
   role?: string;
   applied_at?: string;
   interview_at?: string | null;
+  // Replaces the whole list (empty array clears all questions).
+  interview_questions?: string[];
 }
 
 export interface ApplicationActionResponse {

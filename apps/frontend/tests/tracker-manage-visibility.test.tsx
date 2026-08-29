@@ -46,6 +46,7 @@ function mkApp(status: ApplicationStatus, id: string, company: string): Applicat
     applied_at: null,
     interview_at: null,
     notes: null,
+    interview_questions: [],
     position: 0,
     created_at: '2026-01-01T00:00:00Z',
     updated_at: '2026-01-01T00:00:00Z',

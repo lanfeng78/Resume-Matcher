@@ -984,6 +984,15 @@
     "subtitle": "Acompanhe em que etapa está cada currículo personalizado.",
     "addApplication": "Adicionar candidatura",
     "manage": "Gerenciar",
+    "interviewQuestions": {
+      "button": "Perguntas da entrevista",
+      "title": "Perguntas da entrevista",
+      "description": "Todas as perguntas que você registrou, agrupadas por empresa e cargo.",
+      "empty": {
+        "title": "Nenhuma pergunta de entrevista ainda",
+        "description": "Abra uma candidatura para registrar as perguntas que recebeu."
+      }
+    },
     "manageModal": {
       "title": "Gerenciar etapas visíveis",
       "description": "Etapas ocultas somem apenas da visualização — as candidaturas são mantidas. Sua escolha é salva neste navegador."
@@ -1021,6 +1030,9 @@
       "notes": "Notas",
       "notesPlaceholder": "Adicione notas sobre esta candidatura…",
       "saveNotes": "Salvar notas",
+      "interviewQuestions": "Perguntas da entrevista",
+      "interviewQuestionsPlaceholder": "Uma pergunta por linha…",
+      "saveQuestions": "Salvar perguntas",
       "resumeUnavailable": "O currículo enviado não está mais disponível.",
       "loadFailed": "Não foi possível carregar esta candidatura.",
       "editResume": "Editar currículo"

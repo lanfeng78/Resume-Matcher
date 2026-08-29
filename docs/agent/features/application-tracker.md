@@ -46,17 +46,28 @@ default to `applied` but can be created as `saved`.
    Hiding every stage shows an "all stages hidden" hint (not the empty board).
    The bulk-move destination dropdown intentionally still lists all seven
    stages: it is a target picker, not a display module.
+7. **Interview questions:** the detail modal has an "Interview questions"
+   textarea (one question per line) that saves via the regular card `PATCH`;
+   the header **Interview Questions** button opens a read-only dialog listing
+   every recorded question grouped by application (company · role header +
+   stage badge, blank companies fall back to "Unknown company"). The dialog
+   aggregates the already-loaded board state — no extra endpoint — and
+   therefore includes applications in hidden stages (hiding is a render
+   filter only). Question records are separate from the interview-time field
+   (`interview_at`) edited on the interview column.
 
 ## Data Model
 
 `Application` (SQLite, `apps/backend/app/models.py`): `application_id` (PK),
 `job_id`, `resume_id` (the applied/tailored resume), `master_resume_id`
 (optional base — powers the "shared resume" badge), `status` (7-key enum),
-`company`, `role`, `applied_at`, `interview_at`, `notes`, `position`
-(per-column order, server-renumbered on PATCH), `created_at`, `updated_at`.
-`create_application` dedupes on `(job_id, resume_id)` to survive double-submit.
-`interview_at` is added to older databases by an idempotent `ALTER TABLE`
-migration in `app/db_engine.py`.
+`company`, `role`, `applied_at`, `interview_at`, `notes`, `interview_questions`
+(JSON list of strings; stored inline so deleting the card deletes its
+questions), `position` (per-column order, server-renumbered on PATCH),
+`created_at`, `updated_at`. `create_application` dedupes on
+`(job_id, resume_id)` to survive double-submit. `interview_at` and
+`interview_questions` are added to older databases by idempotent `ALTER TABLE`
+migrations in `app/db_engine.py`.
 
 ## API (`prefix=/applications`, mounted under `/api/v1`)
 
@@ -65,7 +76,7 @@ migration in `app/db_engine.py`.
 | GET | `/applications` | All cards grouped by column (all 7 keys present) |
 | POST | `/applications` | Manual add (creates job + card; best-effort extraction) |
 | GET | `/applications/{id}` | Card + embedded JD + resume (resume null if deleted) |
-| PATCH | `/applications/{id}` | Update status/position/notes/company/role/applied_at/interview_at |
+| PATCH | `/applications/{id}` | Update status/position/notes/company/role/applied_at/interview_at/interview_questions |
 | PATCH | `/applications/bulk` | Move many cards to one column |
 | DELETE | `/applications/{id}` | Delete one card |
 | POST | `/applications/bulk-delete` | Delete many cards |
@@ -85,6 +96,7 @@ migration in `app/db_engine.py`.
 | `apps/frontend/components/tracker/reorder.ts` | Pure drag-end resolution (`planMove`) |
 | `apps/frontend/components/tracker/visibility.ts` | Hidden-stage set: parse/serialize + localStorage I/O |
 | `apps/frontend/components/tracker/manage-status-dialog.tsx` | Per-stage visibility switches (Manage dialog) |
+| `apps/frontend/components/tracker/interview-questions-dialog.tsx` | Read-only all-questions view (header button) |
 | `apps/frontend/lib/api/tracker.ts` | Typed API client |
 
 ## Tests
@@ -96,4 +108,6 @@ migration in `app/db_engine.py`.
   empty-column drop), `tests/api-tracker.test.ts` (client payloads/URLs),
   `tests/tracker-visibility.test.ts` (hidden-set parse/serialize round-trip),
   `tests/tracker-manage-visibility.test.tsx` (Manage dialog hides/persists/
-  restores stages without data loss).
+  restores stages without data loss), `tests/tracker-interview-questions.test.tsx`
+  (header dialog groups by company/role, unknown-company fallback, empty state,
+  hidden-stage questions stay visible).

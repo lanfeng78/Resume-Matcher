@@ -984,6 +984,15 @@
     "subtitle": "각 맞춤화된 이력서가 지원 파이프라인에서 어느 단계에 있는지 추적하세요.",
     "addApplication": "지원 추가",
     "manage": "관리",
+    "interviewQuestions": {
+      "button": "면접 질문",
+      "title": "면접 질문 기록",
+      "description": "기록한 모든 질문을 회사와 직무별로 확인합니다.",
+      "empty": {
+        "title": "아직 면접 질문이 없습니다",
+        "description": "지원 카드를 열어 받은 질문을 기록해 보세요."
+      }
+    },
     "manageModal": {
       "title": "표시할 단계 관리",
       "description": "숨긴 단계는 화면에서만 사라질 뿐 지원 기록은 유지됩니다. 선택은 이 브라우저에 저장됩니다."
@@ -1021,6 +1030,9 @@
       "notes": "메모",
       "notesPlaceholder": "이 지원에 대한 메모를 추가하세요…",
       "saveNotes": "메모 저장",
+      "interviewQuestions": "면접 질문",
+      "interviewQuestionsPlaceholder": "한 줄에 하나씩 입력…",
+      "saveQuestions": "면접 질문 저장",
       "resumeUnavailable": "지원에 사용한 이력서를 더 이상 사용할 수 없습니다.",
       "loadFailed": "이 지원 정보를 불러올 수 없습니다.",
       "editResume": "이력서 편집"

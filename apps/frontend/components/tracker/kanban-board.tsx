@@ -16,6 +16,7 @@ import Loader2 from 'lucide-react/dist/esm/icons/loader-2';
 import ChevronLeft from 'lucide-react/dist/esm/icons/chevron-left';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
 import ColumnsSettings from 'lucide-react/dist/esm/icons/columns-settings';
+import MessageCircleQuestion from 'lucide-react/dist/esm/icons/message-circle-question';
 import { Button } from '@/components/ui/button';
 import { useTranslations } from '@/lib/i18n';
 import {
@@ -33,6 +34,7 @@ import { BulkActionBar } from './bulk-action-bar';
 import { CardDetailModal } from './card-detail-modal';
 import { ManualAddApplicationDialog } from './manual-add-application-dialog';
 import { ManageStatusDialog } from './manage-status-dialog';
+import { InterviewQuestionsDialog } from './interview-questions-dialog';
 import { planMove } from './reorder';
 import { loadHiddenStatuses, saveHiddenStatuses } from './visibility';
 
@@ -60,6 +62,7 @@ export function KanbanBoard() {
   // their data in `columns` (and on the server) — they are just not displayed.
   const [hiddenStatuses, setHiddenStatuses] = useState<Set<ApplicationStatus>>(new Set());
   const [manageOpen, setManageOpen] = useState(false);
+  const [interviewQuestionsOpen, setInterviewQuestionsOpen] = useState(false);
 
   // Horizontal-scroll affordance: the seven stages overflow the canvas, so we
   // track whether more columns sit off-screen and surface controls + a stage
@@ -246,6 +249,10 @@ export function KanbanBoard() {
               </button>
             </div>
           )}
+          <Button variant="outline" onClick={() => setInterviewQuestionsOpen(true)}>
+            <MessageCircleQuestion className="h-4 w-4" />
+            {t('tracker.interviewQuestions.button')}
+          </Button>
           <Button variant="outline" onClick={() => setManageOpen(true)}>
             <ColumnsSettings className="h-4 w-4" />
             {t('tracker.manage')}
@@ -369,6 +376,12 @@ export function KanbanBoard() {
         onOpenChange={setManageOpen}
         hiddenStatuses={hiddenStatuses}
         onToggle={handleToggleVisibility}
+      />
+
+      <InterviewQuestionsDialog
+        open={interviewQuestionsOpen}
+        onOpenChange={setInterviewQuestionsOpen}
+        applications={allCards}
       />
     </div>
   );

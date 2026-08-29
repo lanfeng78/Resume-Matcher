@@ -984,6 +984,15 @@
     "subtitle": "Track where each tailored resume stands in your pipeline.",
     "addApplication": "Add Application",
     "manage": "Manage",
+    "interviewQuestions": {
+      "button": "Interview Questions",
+      "title": "Interview questions",
+      "description": "Every question you recorded, grouped by company and role.",
+      "empty": {
+        "title": "No interview questions yet",
+        "description": "Open an application card to record the questions you were asked."
+      }
+    },
     "manageModal": {
       "title": "Manage visible stages",
       "description": "Hidden stages are only removed from view — applications are kept. Your choice is saved in this browser."
@@ -1021,6 +1030,9 @@
       "notes": "Notes",
       "notesPlaceholder": "Add notes about this application…",
       "saveNotes": "Save notes",
+      "interviewQuestions": "Interview questions",
+      "interviewQuestionsPlaceholder": "One question per line…",
+      "saveQuestions": "Save questions",
       "resumeUnavailable": "The applied resume is no longer available.",
       "loadFailed": "Could not load this application.",
       "editResume": "Edit resume"
